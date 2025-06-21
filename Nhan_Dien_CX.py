@@ -3,7 +3,10 @@ print(f"OpenCV version: {cv2.__version__}")
 import numpy as np
 from datetime import datetime
 import os
+<<<<<<< HEAD
 from collections import deque, Counter
+=======
+>>>>>>> 3a8d0e0d6abc0830b4cc4a84d36a8303bf6ea322
 
 class EmotionDetector:
     def __init__(self):
@@ -19,7 +22,11 @@ class EmotionDetector:
 
         # Khởi tạo biến đếm frame
         self.frame_count = 0
+<<<<<<< HEAD
         self.emotion_history = deque(maxlen=20)  # Lưu 20 cảm xúc gần nhất
+=======
+        self.emotion_history = []
+>>>>>>> 3a8d0e0d6abc0830b4cc4a84d36a8303bf6ea322
 
     def analyze_facial_features(self, face_roi_gray):
         # Phân tích độ sáng và độ tương phản
@@ -93,6 +100,7 @@ class EmotionDetector:
             # Nhận diện cảm xúc
             emotion, scores = self.detect_emotion(face_roi_gray, eyes, smiles, brightness, contrast)
 
+<<<<<<< HEAD
             # Thêm cảm xúc vào lịch sử
             self.emotion_history.append(emotion)
             # Lấy cảm xúc phổ biến nhất trong lịch sử gần đây
@@ -100,11 +108,19 @@ class EmotionDetector:
 
             # Vẽ khung khuôn mặt
             color = self.get_emotion_color(most_common_emotion)
+=======
+            # Vẽ khung khuôn mặt
+            color = self.get_emotion_color(emotion)
+>>>>>>> 3a8d0e0d6abc0830b4cc4a84d36a8303bf6ea322
             cv2.rectangle(frame, (x, y), (x+w, y+h), color, 2)
 
             # Hiển thị thông tin
             font = cv2.FONT_HERSHEY_SIMPLEX
+<<<<<<< HEAD
             cv2.putText(frame, f"Cam xuc: {most_common_emotion}", (x, y-10), font, 0.9, color, 2)
+=======
+            cv2.putText(frame, f"Cam xuc: {emotion}", (x, y-10), font, 0.9, color, 2)
+>>>>>>> 3a8d0e0d6abc0830b4cc4a84d36a8303bf6ea322
 
             # Hiển thị các điểm số cảm xúc
             y_offset = y + h + 20
@@ -116,7 +132,11 @@ class EmotionDetector:
             # Lưu ảnh mỗi 30 frame nếu phát hiện cảm xúc rõ ràng
             self.frame_count += 1
             if self.frame_count % 30 == 0 and scores[emotion] >= 2:
+<<<<<<< HEAD
                 self.save_emotion_capture(frame, most_common_emotion)
+=======
+                self.save_emotion_capture(frame, emotion)
+>>>>>>> 3a8d0e0d6abc0830b4cc4a84d36a8303bf6ea322
 
             # Vẽ đặc điểm mắt
             for (ex, ey, ew, eh) in eyes:
