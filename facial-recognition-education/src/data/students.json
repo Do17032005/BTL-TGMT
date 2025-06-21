@@ -1,0 +1,40 @@
+{
+  "students": [
+    {
+      "id": "001",
+      "name": "John Doe",
+      "facial_data": [
+        {
+          "image": "path/to/john_doe.jpg"
+        },
+        {
+          "image": "path/to/john_doe_alternate.jpg"
+        }
+      ]
+    },
+    {
+      "id": "002",
+      "name": "Jane Smith",
+      "facial_data": {
+        "image_path": "path/to/jane_smith.jpg",
+        "emotion_history": []
+      }
+    },
+    {
+      "id": "003",
+      "name": "Alice Johnson",
+      "facial_data": {
+        "image_path": "path/to/alice_johnson.jpg",
+        "emotion_history": []
+      }
+    },
+    {
+      "id": "004",
+      "name": "Bob Brown",
+      "facial_data": {
+        "image_path": "path/to/bob_brown.jpg",
+        "emotion_history": []
+      }
+    }
+  ]
+}
