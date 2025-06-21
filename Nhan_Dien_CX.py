@@ -155,6 +155,11 @@ def open_camera():
             cv2.imwrite(filename, frame)
             print(f"Đã chụp ảnh: {filename}")
 
+
+
+
+    # Giải phóng camera và đóng cửa sổ
+    
     cap.release()
     cv2.destroyAllWindows()
 
