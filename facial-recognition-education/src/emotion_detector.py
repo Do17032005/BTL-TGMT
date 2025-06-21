@@ -24,30 +24,31 @@ class EmotionDetector:
         return brightness, contrast
 
     def detect_emotion(self, face_roi_gray, eyes, smiles, brightness, contrast):
+        # Khởi tạo tất cả các cảm xúc với giá trị 0
         emotion_scores = {
-            'Vui vẻ': 0,
-            'Buồn': 0,
-            'Bình thường': 0,
-            'Ngạc nhiên': 0,
-            'Mệt mỏi': 0,
+            'vui': 0,
+            'buon': 0,
+            'ngac_nhien': 0,
+            'tuc_gian': 0,
+            'binh_thuong': 0
         }
 
         if len(eyes) >= 2:
             emotion_scores['vui'] += 1
         elif len(eyes) == 0:
-            emotion_scores['Buồn'] += 1
-
+            emotion_scores['buon'] += 1
         if len(smiles) > 0:
-            emotion_scores['Vui vẻ'] += 2
+            emotion_scores['vui'] += 2
         if brightness < 100:
-            emotion_scores['Buồn'] += 1
-        if contrast < 50:
-            emotion_scores['Mệt mỏi'] += 1
-        if brightness > 150:
-            emotion_scores['Bình thường'] += 1
+            emotion_scores['buon'] += 1
         if contrast > 50:
-            emotion_scores['Ngạc nhiên'] += 1
-        # Xác định cảm xúc chiếm ưu thế 
+            emotion_scores['ngac_nhien'] += 1
+        # Thêm cảm xúc 'tuc_gian' nếu có dấu hiệu tức giận
+        if brightness > 200 and contrast < 20:
+            emotion_scores['tuc_gian'] += 1
+        else:
+            emotion_scores['binh_thuong'] += 1
+             # Xác định cảm xúc chiếm ưu thế 
 
         dominant_emotion = max(emotion_scores.items(), key=lambda x: x[1])[0]
         return dominant_emotion, emotion_scores
@@ -98,3 +99,18 @@ class EmotionDetector:
                 self.save_emotion_capture(frame, emotion)
 
         return frame
+
+    def gen_frames(self, camera):
+        while True:
+            success, frame = camera.read()
+            if not success:
+                break
+            else:
+                # processed_frame = detector.process_frame(frame)
+                processed_frame = frame
+
+            ret, buffer = cv2.imencode('.jpg', processed_frame)
+            frame = buffer.tobytes()
+
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')

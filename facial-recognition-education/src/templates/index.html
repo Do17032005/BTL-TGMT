@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nhận diện khuôn mặt & cảm xúc</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Nhận diện khuôn mặt & cảm xúc</h1>
+    <div class="menu">
+        <a href="/">Trang chủ</a>
+        <a href="/register">Đăng ký khuôn mặt</a>
+        <a href="/recognize">Nhận diện</a>
+    </div>
+    <div class="video-container">
+        {% if show_video %}
+        <img src="{{ url_for('video_feed') }}" id="video-feed" />
+        {% endif %}
+    </div>
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %}
+    {% if show_register %}
+    <form method="POST" action="/register">
+        <input type="text" name="student_id" placeholder="ID học sinh" required>
+        <input type="text" name="student_name" placeholder="Tên học sinh" required>
+        <button type="submit">Bắt đầu đăng ký</button>
+    </form>
+    {% endif %}
+</body>
+</html>
