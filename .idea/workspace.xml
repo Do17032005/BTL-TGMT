@@ -4,14 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e772e2af-9017-41c5-baec-7c52471eb70c" name="Changes" comment="" />
+    <list default="true" id="e772e2af-9017-41c5-baec-7c52471eb70c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/BTL-TGMT.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BTL-TGMT.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/camera.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/demo.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/model/deepface" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -29,7 +35,8 @@
     "Python.start_system.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
-    "git-widget-placeholder": "master",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "D:/PYthom zero/BTL-TGMT",
     "node.js.detected.package.eslint": "true",
@@ -68,6 +75,7 @@
       <workItem from="1750638223036" duration="67000" />
       <workItem from="1750638298377" duration="133000" />
       <workItem from="1750638440509" duration="4178000" />
+      <workItem from="1750651814210" duration="682000" />
     </task>
     <servers />
   </component>

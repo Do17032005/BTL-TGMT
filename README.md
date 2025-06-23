@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎭 Hệ Thống Nhận Diện Cảm Xúc
 
 Hệ thống nhận diện cảm xúc sử dụng AI và DeepFace để phân tích cảm xúc từ ảnh khuôn mặt.
@@ -238,3 +239,8 @@ Dự án này được phát hành dưới MIT License.
 ---
 
 **Lưu ý**: Hệ thống này sử dụng DeepFace library và các model AI. Vui lòng tuân thủ các quy định về bản quyền và sử dụng hợp lý. 
+=======
+
+# BTL_TGMT Nhận diện cảm xúc khuôn mặt
+
+>>>>>>> e08aa247562f63aea166a6f15efb7f6afdb82c4a

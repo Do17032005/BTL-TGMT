@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Ứng dụng Camera Real-time để nhận diện cảm xúc
 Sử dụng webcam để phân tích cảm xúc theo thời gian thực
