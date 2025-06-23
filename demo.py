@@ -7,12 +7,13 @@ import sys
 import os
 import json
 from pathlib import Path
+from src.main.emotion_detection import EmotionDetectionSystem
 
 # Thêm đường dẫn để import modules
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src', 'main'))
 
 try:
-    from emotion_detection import EmotionDetectionSystem
+    from src.main.emotion_detection import EmotionDetectionSystem
     print("✅ Import EmotionDetectionSystem thành công")
 except ImportError as e:
     print(f"❌ Lỗi import: {e}")
