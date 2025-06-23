@@ -1,0 +1,34 @@
+{
+  "image_path": "src/data/uploads\\91d0098b-9f20-4b2d-be47-5e8f38aa04df_Neutral.jpg",
+  "analysis_time": "2025-06-23T08:16:13.530398",
+  "model_used": "emotion",
+  "detector_used": "opencv",
+  "success": true,
+  "results": {
+    "emotion": {
+      "angry": 0.005893350341963728,
+      "disgust": 2.554843587438692e-07,
+      "fear": 0.02588962652825546,
+      "happy": 0.4676070438197799,
+      "sad": 0.20519578711589728,
+      "surprise": 0.0007711286333930073,
+      "neutral": 99.29464467827741
+    },
+    "dominant_emotion": "neutral",
+    "region": {
+      "x": 493,
+      "y": 678,
+      "w": 2034,
+      "h": 2034,
+      "left_eye": [
+        1797,
+        1456
+      ],
+      "right_eye": [
+        1123,
+        1486
+      ]
+    },
+    "face_confidence": 0.94
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "image_path": "src/data/uploads\\630b7bde-0e5b-40dc-b986-1bf605472e73_Fear.jpg",
+  "analysis_time": "2025-06-23T08:51:46.947838",
+  "processing_time_seconds": 4.999959,
+  "model_used": "emotion",
+  "detector_used": "opencv",
+  "success": true,
+  "results": {
+    "emotion": {
+      "angry": 0.4392278322752914,
+      "disgust": 1.4709761964661156e-05,
+      "fear": 0.01928000044511626,
+      "happy": 0.006545367015938295,
+      "sad": 0.9695948808378123,
+      "surprise": 0.00439799061818719,
+      "neutral": 98.56093543041523
+    },
+    "dominant_emotion": "neutral",
+    "region": {
+      "x": 987,
+      "y": 1297,
+      "w": 1919,
+      "h": 1919,
+      "left_eye": [
+        2294,
+        2029
+      ],
+      "right_eye": [
+        1579,
+        2026
+      ]
+    },
+    "face_confidence": 0.91
+  }
+}

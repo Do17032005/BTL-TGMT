@@ -1,0 +1,30 @@
+{
+  "image_path": "src/data/uploads\\camera_20250623_083718_479035.jpg",
+  "analysis_time": "2025-06-23T08:37:18.569567",
+  "model_used": "emotion",
+  "detector_used": "opencv",
+  "success": true,
+  "results": {
+    "emotion": {
+      "angry": 0.004324606713303048,
+      "disgust": 1.7095633588972902e-10,
+      "fear": 3.047387478934226,
+      "happy": 0.09975007294491803,
+      "sad": 0.20528389259831817,
+      "surprise": 0.0006433031870247171,
+      "neutral": 96.642613010718
+    },
+    "dominant_emotion": "neutral",
+    "region": {
+      "x": 0,
+      "y": 0,
+      "w": 639,
+      "h": 479,
+      "left_eye": null,
+      "right_eye": null
+    },
+    "face_confidence": 0.0
+  },
+  "source": "camera",
+  "timestamp": "20250623_083718_479035"
+}

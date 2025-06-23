@@ -1,0 +1,49 @@
+{
+  "batch_id": "fe413219-4ae8-4cb8-a90b-033b1c2b5505",
+  "analysis_time": "2025-06-23T08:39:55.780075",
+  "total_files": 1,
+  "statistics": {
+    "total_analyses": 1,
+    "successful_analyses": 1,
+    "success_rate": 1.0,
+    "emotion_distribution": {
+      "sad": 1
+    }
+  },
+  "results": [
+    {
+      "image_path": "src/data/uploads\\8e92a49c-95f2-4aab-93e6-13c9d5e4a6c3_Sad.jpg",
+      "analysis_time": "2025-06-23T08:39:55.780075",
+      "model_used": "emotion",
+      "detector_used": "opencv",
+      "success": true,
+      "results": {
+        "emotion": {
+          "angry": 16.339782854305675,
+          "disgust": 0.20378121458180037,
+          "fear": 2.4571120340890906,
+          "happy": 0.011569206215608118,
+          "sad": 47.43928596015489,
+          "surprise": 0.010246875055180866,
+          "neutral": 33.538224311961194
+        },
+        "dominant_emotion": "sad",
+        "region": {
+          "x": 765,
+          "y": 1277,
+          "w": 2285,
+          "h": 2285,
+          "left_eye": [
+            2305,
+            2163
+          ],
+          "right_eye": [
+            1485,
+            2180
+          ]
+        },
+        "face_confidence": 0.91
+      }
+    }
+  ]
+}
