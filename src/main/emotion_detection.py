@@ -9,6 +9,7 @@ import logging
 from functools import lru_cache
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from PIL import Image, ExifTags
 
 # Cấu hình logging
 logging.basicConfig(level=logging.INFO)
@@ -69,6 +70,13 @@ class EmotionDetectionSystem:
         Validate đường dẫn ảnh với cache
         """
         return os.path.exists(image_path) and os.path.isfile(image_path)
+
+    def _get_model(self, action: str):
+        """Lấy model DeepFace và cache lại để tái sử dụng."""
+        with self._cache_lock:
+            if action not in self._model_cache:
+                self._model_cache[action] = DeepFace.build_model(action)
+        return self._model_cache[action]
     
     def _preprocess_image(self, image_path: str) -> Optional[np.ndarray]:
         """
@@ -80,21 +88,69 @@ class EmotionDetectionSystem:
             if image is None:
                 return None
             
+            # Sửa hướng ảnh dựa trên EXIF (nếu có)
+            try:
+                from PIL import Image, ExifTags
+
+                with Image.open(image_path) as pil_img:
+                    exif = getattr(pil_img, "_getexif", lambda: None)()
+                    if exif:
+                        orientation_key = next(
+                            (k for k, v in ExifTags.TAGS.items() if v == "Orientation"),
+                            None,
+                        )
+                        if orientation_key and orientation_key in exif:
+                            orientation = exif[orientation_key]
+                            if orientation == 3:
+                                image = cv2.rotate(image, cv2.ROTATE_180)
+                            elif orientation == 6:
+                                image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+                            elif orientation == 8:
+                                image = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+            except Exception as exif_err:
+                logger.debug(f"No EXIF orientation info: {str(exif_err)}")
+
             # Resize ảnh nếu quá lớn để tăng tốc độ xử lý
             height, width = image.shape[:2]
             max_size = 1024
-            
+
             if max(height, width) > max_size:
                 scale = max_size / max(height, width)
                 new_width = int(width * scale)
                 new_height = int(height * scale)
                 image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
-            
+
+            # Cân bằng histogram để cải thiện độ tương phản
+            try:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                gray = cv2.equalizeHist(gray)
+                image = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+            except Exception as preprocess_err:
+                logger.warning(f"Histogram equalization failed: {str(preprocess_err)}")
+
             return image
-            
+
         except Exception as e:
             logger.error(f"Lỗi khi tiền xử lý ảnh {image_path}: {str(e)}")
             return None
+
+    def _try_extract_faces(self, image: Union[str, np.ndarray]) -> Tuple[List[Dict], str]:
+        """Thử detect khuôn mặt với nhiều detector."""
+        detectors = [self.detector_backend] + [d for d in self.supported_detectors if d != self.detector_backend]
+        for det in detectors:
+            try:
+                faces = DeepFace.extract_faces(
+                    img_path=image,
+                    detector_backend=det,
+                    enforce_detection=False,
+                )
+                if faces:
+                    if not isinstance(faces, list):
+                        faces = [faces]
+                    return faces, det
+            except Exception as e:
+                logger.debug(f"extract_faces failed with {det}: {str(e)}")
+        return [], self.detector_backend
     
     def analyze_emotion_from_image(self, image_path: str) -> Dict:
         """
@@ -107,6 +163,8 @@ class EmotionDetectionSystem:
             Dict chứa kết quả phân tích
         """
         start_time = datetime.now()
+        detector_used = self.detector_backend
+        detector_used = self.detector_backend
         
         try:
             logger.info(f"Đang phân tích cảm xúc từ ảnh: {image_path}")
@@ -120,23 +178,35 @@ class EmotionDetectionSystem:
             if processed_image is None:
                 raise ValueError("Không thể đọc hoặc xử lý ảnh")
             
-            # Phân tích cảm xúc sử dụng DeepFace với timeout
-            try:
-                result = DeepFace.analyze(
-                    img_path=image_path,
-                    actions=[self.model_name],
-                    detector_backend=self.detector_backend,
-                    enforce_detection=False
+            # Detect faces với nhiều detector để tăng độ chính xác
+            faces, detector_used = self._try_extract_faces(processed_image)
+
+            # Nếu tìm thấy khuôn mặt, chọn khuôn mặt lớn nhất để phân tích
+            analysis_backend = self.detector_backend
+            if faces:
+                if not isinstance(faces, list):
+                    faces = [faces]
+                target_face = max(
+                    faces,
+                    key=lambda f: f.get("face", np.zeros((0, 0))).shape[0]
+                    * f.get("face", np.zeros((0, 0))).shape[1],
                 )
-            except Exception as deepface_error:
-                # Fallback: thử với ảnh đã xử lý
-                logger.warning(f"DeepFace analyze failed, trying with processed image: {str(deepface_error)}")
-                result = DeepFace.analyze(
-                    img_path=image_path,
-                    actions=[self.model_name],
-                    detector_backend=self.detector_backend,
-                    enforce_detection=False
-                )
+                analysis_target = target_face.get("face", processed_image)
+                analysis_backend = "skip"
+                enforce_detect = True
+            else:
+                analysis_target = processed_image
+                enforce_detect = False
+
+            # Phân tích cảm xúc với khuôn mặt đã chọn (hoặc ảnh gốc nếu không tìm thấy)
+            model = self._get_model(self.model_name)
+            result = DeepFace.analyze(
+                img_path=analysis_target,
+                actions=[self.model_name],
+                detector_backend=analysis_backend,
+                enforce_detection=enforce_detect,
+                models={self.model_name: model},
+            )
             
             # Xử lý kết quả
             if isinstance(result, list):
@@ -151,7 +221,7 @@ class EmotionDetectionSystem:
                 "analysis_time": datetime.now().isoformat(),
                 "processing_time_seconds": processing_time,
                 "model_used": self.model_name,
-                "detector_used": self.detector_backend,
+                "detector_used": detector_used,
                 "success": True,
                 "results": result
             }
@@ -167,7 +237,7 @@ class EmotionDetectionSystem:
                 "analysis_time": datetime.now().isoformat(),
                 "processing_time_seconds": processing_time,
                 "model_used": self.model_name,
-                "detector_used": self.detector_backend,
+                "detector_used": detector_used,
                 "success": False,
                 "error": str(e),
                 "results": None
@@ -236,25 +306,12 @@ class EmotionDetectionSystem:
             if not self._validate_image_path(image_path):
                 raise FileNotFoundError(f"Không tìm thấy file: {image_path}")
             
-            # Detect khuôn mặt với timeout
-            try:
-                faces = DeepFace.extract_faces(
-                    img_path=image_path,
-                    detector_backend=self.detector_backend,
-                    enforce_detection=False
-                )
-            except Exception as deepface_error:
-                # Fallback với ảnh đã xử lý
-                logger.warning(f"DeepFace extract_faces failed, trying with processed image: {str(deepface_error)}")
-                processed_image = self._preprocess_image(image_path)
-                if processed_image is None:
-                    raise ValueError("Không thể đọc hoặc xử lý ảnh")
-                
-                faces = DeepFace.extract_faces(
-                    img_path=image_path,
-                    detector_backend=self.detector_backend,
-                    enforce_detection=False
-                )
+            # Detect khuôn mặt với nhiều detector
+            processed_image = self._preprocess_image(image_path)
+            if processed_image is None:
+                raise ValueError("Không thể đọc hoặc xử lý ảnh")
+
+            faces, detector_used = self._try_extract_faces(processed_image)
             
             processing_time = (datetime.now() - start_time).total_seconds()
             
@@ -265,7 +322,7 @@ class EmotionDetectionSystem:
                 "image_path": image_path,
                 "detection_time": datetime.now().isoformat(),
                 "processing_time_seconds": processing_time,
-                "detector_used": self.detector_backend,
+                "detector_used": detector_used,
                 "success": True,
                 "faces_count": len(faces),
                 "faces": serializable_faces
@@ -281,7 +338,7 @@ class EmotionDetectionSystem:
                 "image_path": image_path,
                 "detection_time": datetime.now().isoformat(),
                 "processing_time_seconds": processing_time,
-                "detector_used": self.detector_backend,
+                "detector_used": detector_used,
                 "success": False,
                 "error": str(e),
                 "faces_count": 0,
@@ -380,4 +437,4 @@ def test_emotion_detection():
         print(f"Test image not found: {test_image_path}")
 
 if __name__ == "__main__":
-    test_emotion_detection() 
+    test_emotion_detection()

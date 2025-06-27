@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🎭 Hệ Thống Nhận Diện Cảm Xúc
 
 Hệ thống nhận diện cảm xúc sử dụng AI và DeepFace để phân tích cảm xúc từ ảnh khuôn mặt.
@@ -24,27 +23,29 @@ git clone <repository-url>
 cd BTL-TGMT
 ```
 
-### Bước 2: Cài đặt dependencies
+### Bước 2: Cài đặt nhanh (không cần virtualenv)
 ```bash
-pip install -r requirements.txt
+bash setup.sh
 ```
 
-### Bước 3: Cài đặt DeepFace (nếu chưa có)
-```bash
-cd model/deepface
-pip install -e .
-cd ../..
-```
+Script `setup.sh` sẽ tự động cài đặt các package trong `requirements.txt`, cài đặt DeepFace ở chế độ editable nếu có và tạo sẵn các thư mục dữ liệu cần thiết.
 
 ## 🎯 Sử Dụng
 
 ### Khởi động hệ thống
 ```bash
+python start_system.py
+```
+
+Script `start_system.py` sẽ kiểm tra các dependency và tự động khởi chạy Flask server.
+
+Hoặc có thể chạy thủ công:
+```bash
 cd src/main
 python app.py
 ```
 
-Hệ thống sẽ chạy tại: `http://localhost:5000`
+Hệ thống mặc định chạy tại: `http://localhost:5000`
 
 ### Sử dụng Web Interface
 
@@ -238,9 +239,4 @@ Dự án này được phát hành dưới MIT License.
 
 ---
 
-**Lưu ý**: Hệ thống này sử dụng DeepFace library và các model AI. Vui lòng tuân thủ các quy định về bản quyền và sử dụng hợp lý. 
-=======
-
-# BTL_TGMT Nhận diện cảm xúc khuôn mặt
-
->>>>>>> e08aa247562f63aea166a6f15efb7f6afdb82c4a
+**Lưu ý**: Hệ thống này sử dụng DeepFace library và các model AI. Vui lòng tuân thủ các quy định về bản quyền và sử dụng hợp lý.

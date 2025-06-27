@@ -314,4 +314,4 @@ def main():
         print("   - Kiểm tra quyền truy cập camera")
 
 if __name__ == "__main__":
-    main() 
+    main()
