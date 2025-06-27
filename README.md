@@ -4,10 +4,8 @@ Hệ thống nhận diện cảm xúc sử dụng AI và DeepFace để phân t�
 
 ## ✨ Tính Năng
 
-- **Phân tích cảm xúc đơn lẻ**: Upload một ảnh để phân tích cảm xúc
-- **Phân tích hàng loạt**: Upload nhiều ảnh cùng lúc để phân tích
-- **Phát hiện khuôn mặt**: Detect và đếm số lượng khuôn mặt trong ảnh
-- **Thống kê**: Xem thống kê tổng quan về các lần phân tích
+- **Phân tích qua camera**: Nhận diện cảm xúc thời gian thực từ webcam
+- **Thống kê**: Xem thống kê tổng quan về kết quả
 - **Web Interface**: Giao diện web thân thiện với người dùng
 - **API RESTful**: Cung cấp API để tích hợp với các ứng dụng khác
 - **Client gửi cảm xúc**: Script `student_emotion_client.py` giúp gửi kết quả cảm xúc của học sinh tới giáo viên
@@ -55,40 +53,21 @@ Sửa `SERVER_URL` trong file để trỏ tới endpoint của giáo viên.
 
 ### Sử dụng Web Interface
 
-1. **Phân tích đơn lẻ**:
-   - Chọn tab "Phân Tích Đơn Lẻ"
-   - Upload ảnh hoặc kéo thả file
-   - Nhấn "Phân Tích Cảm Xúc"
+1. **Camera Real-time**:
+   - Chọn tab "Camera Real-time"
+   - Bật camera và nhấn "Chụp & Phân Tích" hoặc sử dụng chế độ real-time
 
-2. **Phân tích hàng loạt**:
-   - Chọn tab "Phân Tích Hàng Loạt"
-   - Upload nhiều ảnh
-   - Nhấn "Phân Tích Hàng Loạt"
-
-3. **Phát hiện khuôn mặt**:
-   - Chọn tab "Phát Hiện Khuôn Mặt"
-   - Upload ảnh
-   - Nhấn "Phát Hiện Khuôn Mặt"
-
-4. **Xem thống kê**:
+2. **Xem thống kê**:
    - Chọn tab "Thống Kê"
    - Nhấn "Tải Thống Kê"
 
 ### Sử dụng API
 
-#### Phân tích cảm xúc
+#### Phân tích cảm xúc qua camera
 ```bash
-curl -X POST -F "image=@path/to/image.jpg" http://localhost:5000/api/analyze
-```
-
-#### Phân tích hàng loạt
-```bash
-curl -X POST -F "images=@image1.jpg" -F "images=@image2.jpg" http://localhost:5000/api/batch-analyze
-```
-
-#### Phát hiện khuôn mặt
-```bash
-curl -X POST -F "image=@path/to/image.jpg" http://localhost:5000/api/detect-faces
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"image": "<base64-image>"}' \
+     http://localhost:5000/api/camera-analyze
 ```
 
 #### Lấy thống kê

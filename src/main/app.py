@@ -4,8 +4,6 @@ import os
 import json
 from datetime import datetime
 import logging
-from werkzeug.utils import secure_filename
-import uuid
 import cv2
 import base64
 import numpy as np
@@ -41,13 +39,6 @@ statistics_cache = {
     'cache_duration': 300  # 5 phút
 }
 
-# Các file được phép upload
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
-
-def allowed_file(filename):
-    """Kiểm tra file có được phép upload không"""
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_cached_statistics():
     """Lấy thống kê từ cache nếu còn hợp lệ"""
@@ -139,66 +130,6 @@ def index():
     """Trang chủ"""
     return render_template('index.html')
 
-@app.route('/api/analyze', methods=['POST'])
-def analyze_emotion():
-    """
-    API endpoint để phân tích cảm xúc từ ảnh
-    """
-    try:
-        # Kiểm tra file trong request
-        if 'image' not in request.files:
-            return jsonify({
-                'success': False,
-                'error': 'Không tìm thấy file ảnh'
-            }), 400
-        
-        file = request.files['image']
-        
-        if file.filename == '':
-            return jsonify({
-                'success': False,
-                'error': 'Chưa chọn file'
-            }), 400
-        
-        if file and file.filename and allowed_file(file.filename):
-            # Tạo tên file an toàn
-            filename = secure_filename(file.filename)
-            unique_filename = f"{uuid.uuid4()}_{filename}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            
-            # Lưu file
-            file.save(file_path)
-            logger.info(f"Đã lưu file: {file_path}")
-            
-            # Phân tích cảm xúc
-            result = emotion_system.analyze_emotion_from_image(file_path)
-            
-            # Lưu kết quả
-            result_filename = f"result_{unique_filename}.json"
-            result_path = os.path.join(app.config['RESULTS_FOLDER'], result_filename)
-            emotion_system.save_results(result, result_path)
-            
-            # Thêm thông tin file
-            result['uploaded_file'] = unique_filename
-            result['result_file'] = result_filename
-            
-            # Invalidate cache
-            statistics_cache['data'] = None
-            
-            return jsonify(result)
-        
-        else:
-            return jsonify({
-                'success': False,
-                'error': 'File không được hỗ trợ. Chỉ chấp nhận: ' + ', '.join(ALLOWED_EXTENSIONS)
-            }), 400
-    
-    except Exception as e:
-        logger.error(f"Lỗi khi xử lý request: {str(e)}")
-        return jsonify({
-            'success': False,
-            'error': f'Lỗi server: {str(e)}'
-        }), 500
 
 @app.route('/api/camera-analyze', methods=['POST'])
 def camera_analyze():
@@ -270,116 +201,6 @@ def camera_analyze():
             'error': f'Lỗi server: {str(e)}'
         }), 500
 
-@app.route('/api/detect-faces', methods=['POST'])
-def detect_faces():
-    """
-    API endpoint để detect khuôn mặt
-    """
-    try:
-        if 'image' not in request.files:
-            return jsonify({
-                'success': False,
-                'error': 'Không tìm thấy file ảnh'
-            }), 400
-        
-        file = request.files['image']
-        
-        if file.filename == '':
-            return jsonify({
-                'success': False,
-                'error': 'Chưa chọn file'
-            }), 400
-        
-        if file and file.filename and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            unique_filename = f"{uuid.uuid4()}_{filename}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            
-            file.save(file_path)
-            
-            # Detect khuôn mặt
-            result = emotion_system.detect_faces(file_path)
-            
-            return jsonify(result)
-        
-        else:
-            return jsonify({
-                'success': False,
-                'error': 'File không được hỗ trợ'
-            }), 400
-    
-    except Exception as e:
-        logger.error(f"Lỗi khi detect khuôn mặt: {str(e)}")
-        return jsonify({
-            'success': False,
-            'error': f'Lỗi server: {str(e)}'
-        }), 500
-
-@app.route('/api/batch-analyze', methods=['POST'])
-def batch_analyze():
-    """
-    API endpoint để phân tích nhiều ảnh cùng lúc
-    """
-    try:
-        files = request.files.getlist('images')
-        
-        if not files:
-            return jsonify({
-                'success': False,
-                'error': 'Không tìm thấy file ảnh'
-            }), 400
-        
-        results = []
-        uploaded_files = []
-        successful_count = 0
-        
-        for file in files:
-            if file.filename == '':
-                continue
-                
-            if file and file.filename and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                unique_filename = f"{uuid.uuid4()}_{filename}"
-                file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-                
-                file.save(file_path)
-                uploaded_files.append(unique_filename)
-                
-                # Phân tích cảm xúc
-                result = emotion_system.analyze_emotion_from_image(file_path)
-                results.append(result)
-                
-                if result.get('success', False):
-                    successful_count += 1
-        
-        # Tính thống kê
-        statistics = emotion_system.get_emotion_statistics(results)
-        
-        # Lưu kết quả batch
-        batch_result = {
-            'batch_id': str(uuid.uuid4()),
-            'analysis_time': datetime.now().isoformat(),
-            'total_files': len(uploaded_files),
-            'successful_analyses': successful_count,
-            'statistics': statistics,
-            'results': results
-        }
-        
-        batch_filename = f"batch_result_{batch_result['batch_id']}.json"
-        batch_path = os.path.join(app.config['RESULTS_FOLDER'], batch_filename)
-        emotion_system.save_results(batch_result, batch_path)
-        
-        # Invalidate cache
-        statistics_cache['data'] = None
-        
-        return jsonify(batch_result)
-    
-    except Exception as e:
-        logger.error(f"Lỗi khi batch analyze: {str(e)}")
-        return jsonify({
-            'success': False,
-            'error': f'Lỗi server: {str(e)}'
-        }), 500
 
 @app.route('/api/statistics', methods=['GET'])
 def get_statistics():

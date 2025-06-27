@@ -7,7 +7,7 @@ from datetime import datetime
 
 from src.main.emotion_detection import EmotionDetectionSystem
 
-SERVER_URL = "http://localhost:5000/api/camera-emotion"  # Endpoint của giáo viên
+SERVER_URL = "http://localhost:5000/api/camera-analyze"  # Endpoint của giáo viên
 STUDENT_ID = "student01"
 INTERVAL = 5  # giây giữa các lần phân tích
 

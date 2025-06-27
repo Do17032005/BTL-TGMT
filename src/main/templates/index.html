@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Nhận Diện Cảm Xúc</title>
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -16,38 +13,20 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
                 <div class="main-container">
-                    <!-- Hero Section -->
                     <div class="hero-section">
                         <div class="container">
                             <h1 class="hero-title">
                                 <i class="bi bi-emoji-smile"></i> Hệ Thống Nhận Diện Cảm Xúc
                             </h1>
-                            <p class="hero-subtitle">Sử dụng AI để phân tích cảm xúc từ ảnh khuôn mặt</p>
+                            <p class="hero-subtitle">Phân tích cảm xúc học sinh qua camera</p>
                         </div>
                     </div>
 
-                    <!-- Main Content -->
                     <div class="container">
-                        <!-- Navigation Tabs -->
                         <ul class="nav nav-tabs" id="mainTabs" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab">
-                                    <i class="bi bi-image"></i> Phân Tích Đơn Lẻ
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="camera-tab" data-bs-toggle="tab" data-bs-target="#camera" type="button" role="tab">
+                                <button class="nav-link active" id="camera-tab" data-bs-toggle="tab" data-bs-target="#camera" type="button" role="tab">
                                     <i class="bi bi-camera-video"></i> Camera Real-time
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">
-                                    <i class="bi bi-images"></i> Phân Tích Hàng Loạt
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="detect-tab" data-bs-toggle="tab" data-bs-target="#detect" type="button" role="tab">
-                                    <i class="bi bi-person-badge"></i> Phát Hiện Khuôn Mặt
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
@@ -57,27 +36,8 @@
                             </li>
                         </ul>
 
-                        <!-- Tab Content -->
                         <div class="tab-content" id="mainTabsContent">
-                            <!-- Single Analysis Tab -->
-                            <div class="tab-pane fade show active" id="single" role="tabpanel">
-                                <div class="upload-zone" onclick="document.getElementById('single-file').click()">
-                                    <div class="upload-icon">
-                                        <i class="bi bi-cloud-upload"></i>
-                                    </div>
-                                    <h5>Chọn ảnh để phân tích cảm xúc</h5>
-                                    <p class="text-muted">Hoặc kéo thả file vào đây</p>
-                                </div>
-                                <input type="file" id="single-file" class="d-none" accept="image/*" onchange="handleSingleFile(this)">
-                                <div class="text-center">
-                                    <button class="btn btn-custom" onclick="analyzeSingleImage()" id="analyze-btn" disabled>
-                                        <i class="bi bi-search"></i> Phân Tích Cảm Xúc
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Camera Tab -->
-                            <div class="tab-pane fade" id="camera" role="tabpanel">
+                            <div class="tab-pane fade show active" id="camera" role="tabpanel">
                                 <div class="camera-container">
                                     <div class="camera-status disconnected" id="camera-status">
                                         <i class="bi bi-camera-video-off"></i> Camera chưa kết nối
@@ -103,43 +63,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Batch Analysis Tab -->
-                            <div class="tab-pane fade" id="batch" role="tabpanel">
-                                <div class="upload-zone" onclick="document.getElementById('batch-files').click()">
-                                    <div class="upload-icon">
-                                        <i class="bi bi-folder-plus"></i>
-                                    </div>
-                                    <h5>Chọn nhiều ảnh để phân tích</h5>
-                                    <p class="text-muted">Hoặc kéo thả nhiều file vào đây</p>
-                                </div>
-                                <input type="file" id="batch-files" class="d-none" accept="image/*" multiple onchange="handleBatchFiles(this)">
-                                <div id="batch-file-list"></div>
-                                <div class="text-center">
-                                    <button class="btn btn-custom" onclick="analyzeBatchImages()" id="batch-analyze-btn" disabled>
-                                        <i class="bi bi-search"></i> Phân Tích Hàng Loạt
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Face Detection Tab -->
-                            <div class="tab-pane fade" id="detect" role="tabpanel">
-                                <div class="upload-zone" onclick="document.getElementById('detect-file').click()">
-                                    <div class="upload-icon">
-                                        <i class="bi bi-person-plus"></i>
-                                    </div>
-                                    <h5>Chọn ảnh để phát hiện khuôn mặt</h5>
-                                    <p class="text-muted">Hoặc kéo thả file vào đây</p>
-                                </div>
-                                <input type="file" id="detect-file" class="d-none" accept="image/*" onchange="handleDetectFile(this)">
-                                <div class="text-center">
-                                    <button class="btn btn-custom" onclick="detectFaces()" id="detect-btn" disabled>
-                                        <i class="bi bi-search"></i> Phát Hiện Khuôn Mặt
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Statistics Tab -->
                             <div class="tab-pane fade" id="stats" role="tabpanel">
                                 <div class="text-center">
                                     <button class="btn btn-custom" onclick="loadStatistics()">
@@ -153,15 +76,12 @@
                             </div>
                         </div>
 
-                        <!-- Loading Spinner -->
-                        <div class="loading-spinner" id="loading">
+                        <div class="loading-spinner" id="loading" style="display:none;">
                             <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                            <p class="mt-3">Đang xử lý...</p>
                         </div>
 
-                        <!-- Results Area -->
                         <div id="result-area" class="mt-4" style="display: none;">
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -177,32 +97,13 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-        // Global variables
-        let selectedFiles = [];
-        let currentTab = 'single';
         let cameraStream = null;
         let realTimeInterval = null;
         let isRealTimeActive = false;
-        let isProcessing = false; // Prevent multiple simultaneous requests
+        let isProcessing = false;
 
-        // Debounce function for performance
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Throttle function for real-time analysis
         function throttle(func, limit) {
             let inThrottle;
             return function() {
@@ -213,32 +114,21 @@
                     inThrottle = true;
                     setTimeout(() => inThrottle = false, limit);
                 }
-            }
+            };
         }
 
-        // Camera functions
         async function startCamera() {
             try {
                 const video = document.getElementById('camera-video');
                 const status = document.getElementById('camera-status');
-                
-                cameraStream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        width: { ideal: 640 },
-                        height: { ideal: 480 },
-                        frameRate: { ideal: 30 }
-                    } 
-                });
-                
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } } });
                 video.srcObject = cameraStream;
                 status.innerHTML = '<i class="bi bi-camera-video"></i> Camera đã kết nối';
                 status.className = 'camera-status connected';
-                
                 document.getElementById('start-camera-btn').disabled = true;
                 document.getElementById('stop-camera-btn').disabled = false;
                 document.getElementById('capture-btn').disabled = false;
                 document.getElementById('realtime-btn').disabled = false;
-                
             } catch (error) {
                 console.error('Lỗi khi khởi động camera:', error);
                 document.getElementById('camera-status').innerHTML = '<i class="bi bi-exclamation-triangle"></i> Không thể truy cập camera';
@@ -251,19 +141,15 @@
                 cameraStream.getTracks().forEach(track => track.stop());
                 cameraStream = null;
             }
-            
             const video = document.getElementById('camera-video');
             video.srcObject = null;
-            
             document.getElementById('camera-status').innerHTML = '<i class="bi bi-camera-video-off"></i> Camera chưa kết nối';
             document.getElementById('camera-status').className = 'camera-status disconnected';
-            
             document.getElementById('start-camera-btn').disabled = false;
             document.getElementById('stop-camera-btn').disabled = true;
             document.getElementById('capture-btn').disabled = true;
             document.getElementById('realtime-btn').disabled = true;
             document.getElementById('stop-realtime-btn').disabled = true;
-            
             stopRealTimeAnalysis();
         }
 
@@ -272,20 +158,16 @@
                 if (!cameraStream) alert('Vui lòng bật camera trước');
                 return;
             }
-            
             const video = document.getElementById('camera-video');
             const canvas = document.getElementById('camera-canvas');
             const context = canvas.getContext('2d');
-            
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             context.drawImage(video, 0, 0);
-            
             canvas.toBlob(function(blob) {
                 const reader = new FileReader();
                 reader.onload = function() {
-                    const base64Image = reader.result;
-                    analyzeCameraImage(base64Image);
+                    analyzeCameraImage(reader.result);
                 };
                 reader.readAsDataURL(blob);
             }, 'image/jpeg', 0.8);
@@ -296,19 +178,15 @@
                 alert('Vui lòng bật camera trước');
                 return;
             }
-            
             isRealTimeActive = true;
             document.getElementById('realtime-btn').disabled = true;
             document.getElementById('stop-realtime-btn').disabled = false;
-            
-            // Throttle real-time analysis to prevent overwhelming the server
-            const throttledCapture = throttle(captureAndAnalyze, 2000); // 2 seconds minimum interval
-            
+            const throttledCapture = throttle(captureAndAnalyze, 2000);
             realTimeInterval = setInterval(() => {
                 if (isRealTimeActive && !isProcessing) {
                     throttledCapture();
                 }
-            }, 3000); // Phân tích mỗi 3 giây
+            }, 3000);
         }
 
         function stopRealTimeAnalysis() {
@@ -317,28 +195,20 @@
                 clearInterval(realTimeInterval);
                 realTimeInterval = null;
             }
-            
             document.getElementById('realtime-btn').disabled = false;
             document.getElementById('stop-realtime-btn').disabled = true;
         }
 
         async function analyzeCameraImage(base64Image) {
             if (isProcessing) return;
-            
             isProcessing = true;
             showLoading(true);
-            
             try {
                 const response = await fetch('/api/camera-analyze', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        image: base64Image
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: base64Image })
                 });
-                
                 const data = await response.json();
                 showResult(data.success, data, data.error || 'Phân tích camera thành công');
             } catch (error) {
@@ -349,332 +219,13 @@
             }
         }
 
-        // File handling functions
-        function handleSingleFile(input) {
-            const file = input.files[0];
-            if (file) {
-                selectedFiles = [file];
-                document.getElementById('analyze-btn').disabled = false;
-                showPreview(file);
-            }
-        }
-
-        function handleBatchFiles(input) {
-            const files = Array.from(input.files);
-            selectedFiles = files;
-            document.getElementById('batch-analyze-btn').disabled = files.length === 0;
-            showBatchFileList(files);
-        }
-
-        function handleDetectFile(input) {
-            const file = input.files[0];
-            if (file) {
-                selectedFiles = [file];
-                document.getElementById('detect-btn').disabled = false;
-                showPreview(file);
-            }
-        }
-
-        function showPreview(file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const resultContent = document.getElementById('result-content');
-                resultContent.innerHTML = `
-                    <div class="result-preview">
-                        <img src="${e.target.result}" class="preview-image" alt="Preview">
-                    </div>
-                    <div class="emotion-card">
-                        <h6>Chọn file để phân tích</h6>
-                    </div>
-                `;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function showBatchFileList(files) {
-            const fileList = document.getElementById('batch-file-list');
-            fileList.innerHTML = '';
-            
-            files.forEach((file, index) => {
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <div>
-                        <div class="fw-bold">${file.name}</div>
-                        <small class="text-muted">${(file.size / 1024).toFixed(1)} KB</small>
-                    </div>
-                    <button class="btn btn-sm btn-outline-danger" onclick="removeFile(${index})">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                `;
-                fileList.appendChild(fileItem);
-            });
-        }
-
-        function removeFile(index) {
-            selectedFiles.splice(index, 1);
-            showBatchFileList(selectedFiles);
-            document.getElementById('batch-analyze-btn').disabled = selectedFiles.length === 0;
-        }
-
-        // UI functions
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-        }
-
-        function showResult(success, data, message) {
-            const resultArea = document.getElementById('result-area');
-            const resultStatus = document.getElementById('result-status');
-            const resultContent = document.getElementById('result-content');
-
-            resultStatus.textContent = success ? 'Thành công' : 'Lỗi';
-            resultStatus.className = 'badge ' + (success ? 'bg-success' : 'bg-danger');
-
-            if (success && data) {
-                if (currentTab === 'single' && data.results) {
-                    displayEmotionResults(data);
-                } else if (currentTab === 'camera' && data.results) {
-                    displayCameraResults(data);
-                } else if (currentTab === 'batch' && data.results) {
-                    displayBatchResults(data);
-                } else if (currentTab === 'detect' && data.faces) {
-                    displayFaceDetectionResults(data);
-                }
-            } else {
-                resultContent.innerHTML = `<div class="alert alert-danger">${message}</div>`;
-            }
-
-            resultArea.style.display = 'block';
-            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        // Display functions with performance optimizations
-        function displayEmotionResults(data) {
-            const resultContent = document.getElementById('result-content');
-            const results = data.results;
-            
-            let imagePreview = '';
-            if (data.uploaded_file) {
-                imagePreview = `<div class="result-preview">
-                    <img src="/uploads/${data.uploaded_file}" class="preview-image" alt="Analyzed Image">
-                </div>`;
-            }
-
-            let emotionResults = '<div class="emotion-card"><h5>Kết Quả Phân Tích Cảm Xúc</h5>';
-            
-            if (results.dominant_emotion) {
-                const emotions = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
-                emotions.forEach(emotion => {
-                    const percentage = results.emotion && results.emotion[emotion] ? 
-                        (results.emotion[emotion] * 100).toFixed(1) : '0.0';
-                    
-                    emotionResults += `
-                        <div class="emotion-item">
-                            <div class="emotion-name">${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</div>
-                            <div class="emotion-bar">
-                                <div class="emotion-fill" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="emotion-percentage">${percentage}%</div>
-                        </div>
-                    `;
-                });
-            }
-            
-            emotionResults += '</div>';
-            
-            resultContent.innerHTML = imagePreview + emotionResults;
-        }
-
-        function displayCameraResults(data) {
-            const resultContent = document.getElementById('result-content');
-            const results = data.results;
-            
-            let emotionResults = '<div class="emotion-card"><h5><i class="bi bi-camera-video"></i> Kết Quả Phân Tích Camera</h5>';
-            
-            if (results.dominant_emotion) {
-                const emotions = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
-                emotions.forEach(emotion => {
-                    const percentage = results.emotion && results.emotion[emotion] ? 
-                        (results.emotion[emotion] * 100).toFixed(1) : '0.0';
-                    
-                    emotionResults += `
-                        <div class="emotion-item">
-                            <div class="emotion-name">${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</div>
-                            <div class="emotion-bar">
-                                <div class="emotion-fill" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="emotion-percentage">${percentage}%</div>
-                        </div>
-                    `;
-                });
-            }
-            
-            emotionResults += '</div>';
-            
-            resultContent.innerHTML = emotionResults;
-        }
-
-        function displayBatchResults(data) {
-            const resultContent = document.getElementById('result-content');
-            const stats = data.statistics;
-            
-            let statsHtml = `
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="stats-card">
-                            <div class="stats-number">${data.total_files}</div>
-                            <div class="stats-label">Tổng số ảnh</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stats-card">
-                            <div class="stats-number">${data.successful_analyses || stats.successful_analyses}</div>
-                            <div class="stats-label">Phân tích thành công</div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="stats-card">
-                            <div class="stats-number">${((data.successful_analyses || stats.successful_analyses) / data.total_files * 100).toFixed(1)}%</div>
-                            <div class="stats-label">Tỷ lệ thành công</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            let emotionDistribution = '<div class="emotion-card"><h5>Phân Bố Cảm Xúc</h5>';
-            if (stats.emotion_distribution) {
-                Object.entries(stats.emotion_distribution).forEach(([emotion, count]) => {
-                    const total = data.successful_analyses || stats.successful_analyses;
-                    const percentage = total > 0 ? (count / total * 100).toFixed(1) : '0.0';
-                    emotionDistribution += `
-                        <div class="emotion-item">
-                            <div class="emotion-name">${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</div>
-                            <div class="emotion-bar">
-                                <div class="emotion-fill" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="emotion-percentage">${count}</div>
-                        </div>
-                    `;
-                });
-            }
-            emotionDistribution += '</div>';
-            
-            resultContent.innerHTML = statsHtml + emotionDistribution;
-        }
-
-        function displayFaceDetectionResults(data) {
-            const resultContent = document.getElementById('result-content');
-            
-            let imagePreview = '';
-            if (data.image_path) {
-                const filename = data.image_path.split('/').pop();
-                imagePreview = `<div class="result-preview">
-                    <img src="/uploads/${filename}" class="preview-image" alt="Face Detection">
-                </div>`;
-            }
-
-            let faceResults = `
-                <div class="emotion-card">
-                    <h5>Kết Quả Phát Hiện Khuôn Mặt</h5>
-                    <div class="emotion-item">
-                        <div class="emotion-name">Số lượng khuôn mặt</div>
-                        <div class="emotion-percentage">${data.faces_count}</div>
-                    </div>
-                    <div class="emotion-item">
-                        <div class="emotion-name">Detector sử dụng</div>
-                        <div class="emotion-percentage">${data.detector_used}</div>
-                    </div>
-                </div>
-            `;
-            
-            resultContent.innerHTML = imagePreview + faceResults;
-        }
-
-        // API functions with error handling and debouncing
-        async function analyzeSingleImage() {
-            if (selectedFiles.length === 0 || isProcessing) return;
-            
-            isProcessing = true;
-            showLoading(true);
-            const formData = new FormData();
-            formData.append('image', selectedFiles[0]);
-
-            try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                showResult(data.success, data, data.error || 'Phân tích thành công');
-            } catch (error) {
-                showResult(false, null, 'Lỗi kết nối: ' + error.message);
-            } finally {
-                showLoading(false);
-                isProcessing = false;
-            }
-        }
-
-        async function analyzeBatchImages() {
-            if (selectedFiles.length === 0 || isProcessing) return;
-            
-            isProcessing = true;
-            showLoading(true);
-            const formData = new FormData();
-            selectedFiles.forEach(file => {
-                formData.append('images', file);
-            });
-
-            try {
-                const response = await fetch('/api/batch-analyze', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                showResult(true, data, 'Phân tích hàng loạt thành công');
-            } catch (error) {
-                showResult(false, null, 'Lỗi kết nối: ' + error.message);
-            } finally {
-                showLoading(false);
-                isProcessing = false;
-            }
-        }
-
-        async function detectFaces() {
-            if (selectedFiles.length === 0 || isProcessing) return;
-            
-            isProcessing = true;
-            showLoading(true);
-            const formData = new FormData();
-            formData.append('image', selectedFiles[0]);
-
-            try {
-                const response = await fetch('/api/detect-faces', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                showResult(data.success, data, data.error || 'Phát hiện khuôn mặt thành công');
-            } catch (error) {
-                showResult(false, null, 'Lỗi kết nối: ' + error.message);
-            } finally {
-                showLoading(false);
-                isProcessing = false;
-            }
-        }
-
         async function loadStatistics() {
             if (isProcessing) return;
-            
             isProcessing = true;
             showLoading(true);
-            
             try {
                 const response = await fetch('/api/statistics');
                 const data = await response.json();
-                
                 if (data.success) {
                     displayStatistics(data);
                 } else {
@@ -692,7 +243,6 @@
             const statsArea = document.getElementById('statistics-area');
             const statsGrid = document.getElementById('stats-grid');
             const stats = data.statistics;
-            
             statsGrid.innerHTML = `
                 <div class="col-md-4 mb-3">
                     <div class="stats-card">
@@ -711,93 +261,64 @@
                         <div class="stats-number">${(stats.success_rate * 100).toFixed(1)}%</div>
                         <div class="stats-label">Tỷ lệ thành công</div>
                     </div>
-                </div>
-            `;
-            
+                </div>`;
             if (stats.emotion_distribution) {
                 Object.entries(stats.emotion_distribution).forEach(([emotion, count]) => {
-                    const emotionCard = document.createElement('div');
-                    emotionCard.className = 'col-md-3 mb-3';
-                    emotionCard.innerHTML = `
-                        <div class="stats-card">
-                            <div class="stats-number">${count}</div>
-                            <div class="stats-label">${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</div>
-                        </div>
-                    `;
-                    statsGrid.appendChild(emotionCard);
+                    const card = document.createElement('div');
+                    card.className = 'col-md-3 mb-3';
+                    card.innerHTML = `<div class="stats-card"><div class="stats-number">${count}</div><div class="stats-label">${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</div></div>`;
+                    statsGrid.appendChild(card);
                 });
             }
-            
             statsArea.style.display = 'block';
         }
 
-        // Event listeners with performance optimizations
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+        }
+
+        function showResult(success, data, message) {
+            const resultArea = document.getElementById('result-area');
+            const resultStatus = document.getElementById('result-status');
+            const resultContent = document.getElementById('result-content');
+            resultStatus.textContent = success ? 'Thành công' : 'Lỗi';
+            resultStatus.className = 'badge ' + (success ? 'bg-success' : 'bg-danger');
+            if (success && data && data.results) {
+                displayCameraResults(data);
+            } else {
+                resultContent.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+            }
+            resultArea.style.display = 'block';
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function displayCameraResults(data) {
+            const resultContent = document.getElementById('result-content');
+            const results = data.results;
+            let emotionResults = '<div class="emotion-card"><h5><i class="bi bi-camera-video"></i> Kết Quả Phân Tích Camera</h5>';
+            if (results.dominant_emotion) {
+                const emotions = ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral'];
+                emotions.forEach(emotion => {
+                    const percentage = results.emotion && results.emotion[emotion] ? (results.emotion[emotion] * 100).toFixed(1) : '0.0';
+                    emotionResults += `<div class="emotion-item"><div class="emotion-name">${emotion.charAt(0).toUpperCase() + emotion.slice(1)}</div><div class="emotion-bar"><div class="emotion-fill" style="width: ${percentage}%"></div></div><div class="emotion-percentage">${percentage}%</div></div>`;
+                });
+            }
+            emotionResults += '</div>';
+            resultContent.innerHTML = emotionResults;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Tab change handler
             const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
             tabs.forEach(tab => {
                 tab.addEventListener('shown.bs.tab', function(event) {
                     const targetId = event.target.getAttribute('data-bs-target').substring(1);
-                    currentTab = targetId;
-                    
-                    // Hide results when switching tabs
-                    document.getElementById('result-area').style.display = 'none';
-                    
-                    // Stop camera when switching to other tabs
                     if (targetId !== 'camera' && cameraStream) {
                         stopCamera();
                     }
-                });
-            });
-
-            // Drag and drop functionality with debouncing
-            const uploadZones = document.querySelectorAll('.upload-zone');
-            
-            uploadZones.forEach(zone => {
-                zone.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('dragover');
-                });
-                
-                zone.addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                });
-                
-                zone.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                    
-                    const files = Array.from(e.dataTransfer.files);
-                    if (files.length > 0) {
-                        if (currentTab === 'batch') {
-                            selectedFiles = files;
-                            document.getElementById('batch-analyze-btn').disabled = false;
-                            showBatchFileList(files);
-                        } else {
-                            selectedFiles = [files[0]];
-                            if (currentTab === 'single') {
-                                document.getElementById('analyze-btn').disabled = false;
-                            } else if (currentTab === 'detect') {
-                                document.getElementById('detect-btn').disabled = false;
-                            }
-                            showPreview(files[0]);
-                        }
-                    }
-                });
-            });
-
-            // Prevent multiple clicks
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    if (isProcessing) {
-                        e.preventDefault();
-                        return false;
-                    }
+                    document.getElementById('result-area').style.display = 'none';
                 });
             });
         });
     </script>
 </body>
-</html> 
+</html>
