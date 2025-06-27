@@ -83,15 +83,23 @@ class EmotionDetectionSystem:
             # Resize ảnh nếu quá lớn để tăng tốc độ xử lý
             height, width = image.shape[:2]
             max_size = 1024
-            
+
             if max(height, width) > max_size:
                 scale = max_size / max(height, width)
                 new_width = int(width * scale)
                 new_height = int(height * scale)
                 image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_AREA)
-            
+
+            # Cân bằng histogram để cải thiện độ tương phản
+            try:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                gray = cv2.equalizeHist(gray)
+                image = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+            except Exception as preprocess_err:
+                logger.warning(f"Histogram equalization failed: {str(preprocess_err)}")
+
             return image
-            
+
         except Exception as e:
             logger.error(f"Lỗi khi tiền xử lý ảnh {image_path}: {str(e)}")
             return None
@@ -130,8 +138,21 @@ class EmotionDetectionSystem:
                 )
             except Exception as detection_error:
                 logger.warning(
-                    f"DeepFace extract_faces failed, analyzing full image: {str(detection_error)}"
+                    f"DeepFace extract_faces failed with {self.detector_backend}: {str(detection_error)}"
                 )
+                # Fallback thử với retinaface nếu chưa phải detector hiện tại
+                if self.detector_backend != "retinaface":
+                    try:
+                        faces = DeepFace.extract_faces(
+                            img_path=processed_image,
+                            detector_backend="retinaface",
+                            enforce_detection=False,
+                        )
+                        logger.info("RetinaFace fallback succeeded")
+                    except Exception as fallback_error:
+                        logger.warning(
+                            f"RetinaFace fallback failed, analyzing full image: {str(fallback_error)}"
+                        )
 
             # Nếu tìm thấy khuôn mặt, chọn khuôn mặt lớn nhất để phân tích
             if faces:
@@ -260,17 +281,32 @@ class EmotionDetectionSystem:
                     enforce_detection=False
                 )
             except Exception as deepface_error:
-                # Fallback với ảnh đã xử lý
-                logger.warning(f"DeepFace extract_faces failed, trying with processed image: {str(deepface_error)}")
+                # Fallback với ảnh đã xử lý hoặc detector khác
+                logger.warning(f"DeepFace extract_faces failed with {self.detector_backend}: {str(deepface_error)}")
                 processed_image = self._preprocess_image(image_path)
                 if processed_image is None:
                     raise ValueError("Không thể đọc hoặc xử lý ảnh")
 
-                faces = DeepFace.extract_faces(
-                    img_path=processed_image,
-                    detector_backend=self.detector_backend,
-                    enforce_detection=False
-                )
+                try:
+                    faces = DeepFace.extract_faces(
+                        img_path=processed_image,
+                        detector_backend=self.detector_backend,
+                        enforce_detection=False
+                    )
+                except Exception:
+                    if self.detector_backend != "retinaface":
+                        try:
+                            faces = DeepFace.extract_faces(
+                                img_path=processed_image,
+                                detector_backend="retinaface",
+                                enforce_detection=False
+                            )
+                            logger.info("RetinaFace fallback succeeded in detect_faces")
+                        except Exception as fallback_error:
+                            logger.warning(f"RetinaFace fallback failed: {str(fallback_error)}")
+                            faces = []
+                    else:
+                        faces = []
             
             processing_time = (datetime.now() - start_time).total_seconds()
             
