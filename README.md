@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🎭 Hệ Thống Nhận Diện Cảm Xúc
 
 Hệ thống nhận diện cảm xúc sử dụng AI và DeepFace để phân tích cảm xúc từ ảnh khuôn mặt.
@@ -11,6 +10,7 @@ Hệ thống nhận diện cảm xúc sử dụng AI và DeepFace để phân t�
 - **Thống kê**: Xem thống kê tổng quan về các lần phân tích
 - **Web Interface**: Giao diện web thân thiện với người dùng
 - **API RESTful**: Cung cấp API để tích hợp với các ứng dụng khác
+- **Client gửi cảm xúc**: Script `student_emotion_client.py` giúp gửi kết quả cảm xúc của học sinh tới giáo viên
 
 ## 🚀 Cài Đặt
 
@@ -45,6 +45,13 @@ python app.py
 ```
 
 Hệ thống sẽ chạy tại: `http://localhost:5000`
+
+### Sử dụng client gửi cảm xúc
+Script `student_emotion_client.py` chạy trên máy học sinh để gửi kết quả cảm xúc định kỳ đến server của giáo viên.
+```bash
+python student_emotion_client.py
+```
+Sửa `SERVER_URL` trong file để trỏ tới endpoint của giáo viên.
 
 ### Sử dụng Web Interface
 
@@ -90,8 +97,7 @@ curl http://localhost:5000/api/statistics
 ```
 
 ## 📁 Cấu Trúc Dự Án
-
-```
+```text
 BTL-TGMT/
 ├── src/
 │   ├── main/
@@ -107,26 +113,23 @@ BTL-TGMT/
 ├── model/
 │   └── deepface/                  # DeepFace library
 ├── requirements.txt               # Python dependencies
+├── student_emotion_client.py      # Client gửi cảm xúc
 └── README.md                      # This file
 ```
 
 ## 🔧 Cấu Hình
 
 ### Thay đổi cấu hình trong `app.py`:
-
 ```python
 # Kích thước file tối đa (mặc định: 16MB)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-# Thư mục lưu file upload
-app.config['UPLOAD_FOLDER'] = 'src/data/uploads'
-
+...
 # Thư mục lưu kết quả
 app.config['RESULTS_FOLDER'] = 'src/data/results'
 ```
 
 ### Thay đổi model và detector trong `emotion_detection.py`:
-
 ```python
 # Khởi tạo với model và detector khác
 emotion_system = EmotionDetectionSystem(
@@ -137,7 +140,7 @@ emotion_system = EmotionDetectionSystem(
 
 ## 📊 Kết Quả Phân Tích
 
-Hệ thống có thể nhận diện 7 loại cảm xúc:
+Hệ thống nhận diện 7 loại cảm xúc:
 - 😠 **Angry** (Giận dữ)
 - 🤢 **Disgust** (Ghê tởm)
 - 😨 **Fear** (Sợ hãi)
@@ -146,7 +149,7 @@ Hệ thống có thể nhận diện 7 loại cảm xúc:
 - 😲 **Surprise** (Ngạc nhiên)
 - 😐 **Neutral** (Bình thường)
 
-### Format kết quả JSON:
+### Format kết quả JSON
 ```json
 {
   "image_path": "path/to/image.jpg",
@@ -171,8 +174,7 @@ Hệ thống có thể nhận diện 7 loại cảm xúc:
 
 ## 🛠️ Phát Triển
 
-### Thêm tính năng mới:
-
+### Thêm tính năng mới
 1. **Thêm API endpoint** trong `app.py`:
 ```python
 @app.route('/api/new-feature', methods=['POST'])
@@ -180,17 +182,15 @@ def new_feature():
     # Implementation here
     pass
 ```
-
 2. **Thêm logic xử lý** trong `emotion_detection.py`:
 ```python
 def new_analysis_method(self, image_path: str) -> Dict:
     # Implementation here
     pass
 ```
-
 3. **Cập nhật web interface** trong `templates/index.html`
 
-### Chạy tests:
+### Chạy tests
 ```bash
 # Tạo test script
 python -m pytest tests/
@@ -198,29 +198,23 @@ python -m pytest tests/
 
 ## 🐛 Xử Lý Lỗi
 
-### Lỗi thường gặp:
-
 1. **"No face detected"**:
    - Đảm bảo ảnh có khuôn mặt rõ ràng
    - Thử detector khác (mtcnn, retinaface)
-
 2. **"Model not found"**:
    - Chạy lại `pip install -e .` trong thư mục deepface
    - Kiểm tra kết nối internet để download model
-
 3. **"File too large"**:
    - Giảm kích thước ảnh
    - Tăng `MAX_CONTENT_LENGTH` trong cấu hình
 
 ## 📈 Hiệu Suất
-
-- **Thời gian xử lý**: ~2-5 giây/ảnh (tùy thuộc vào kích thước và độ phức tạp)
-- **Độ chính xác**: ~85-95% (tùy thuộc vào chất lượng ảnh)
+- **Thời gian xử lý**: ~2-5 giây/ảnh (tùy vào kích thước và độ phức tạp)
+- **Độ chính xác**: ~85-95% (tùy vào chất lượng ảnh)
 - **Hỗ trợ format**: JPG, PNG, GIF, BMP
 - **Kích thước file**: Tối đa 16MB
 
 ## 🤝 Đóng Góp
-
 1. Fork repository
 2. Tạo feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit changes (`git commit -m 'Add amazing feature'`)
@@ -232,15 +226,9 @@ python -m pytest tests/
 Dự án này được phát hành dưới MIT License.
 
 ## 📞 Liên Hệ
-
 - Email: your.email@example.com
 - GitHub: [your-username](https://github.com/your-username)
 
 ---
 
-**Lưu ý**: Hệ thống này sử dụng DeepFace library và các model AI. Vui lòng tuân thủ các quy định về bản quyền và sử dụng hợp lý. 
-=======
-
-# BTL_TGMT Nhận diện cảm xúc khuôn mặt
-
->>>>>>> e08aa247562f63aea166a6f15efb7f6afdb82c4a
+**Lưu ý**: Hệ thống này sử dụng DeepFace library và các model AI. Vui lòng tuân thủ các quy định về bản quyền và sử dụng hợp lý.
