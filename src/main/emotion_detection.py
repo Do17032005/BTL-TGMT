@@ -130,9 +130,11 @@ class EmotionDetectionSystem:
                 )
             except Exception as deepface_error:
                 # Fallback: thử với ảnh đã xử lý
-                logger.warning(f"DeepFace analyze failed, trying with processed image: {str(deepface_error)}")
+                logger.warning(
+                    f"DeepFace analyze failed, trying with processed image: {str(deepface_error)}"
+                )
                 result = DeepFace.analyze(
-                    img_path=image_path,
+                    img_path=processed_image,
                     actions=[self.model_name],
                     detector_backend=self.detector_backend,
                     enforce_detection=False
@@ -249,9 +251,9 @@ class EmotionDetectionSystem:
                 processed_image = self._preprocess_image(image_path)
                 if processed_image is None:
                     raise ValueError("Không thể đọc hoặc xử lý ảnh")
-                
+
                 faces = DeepFace.extract_faces(
-                    img_path=image_path,
+                    img_path=processed_image,
                     detector_backend=self.detector_backend,
                     enforce_detection=False
                 )

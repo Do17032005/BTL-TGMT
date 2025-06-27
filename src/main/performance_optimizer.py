@@ -80,8 +80,8 @@ class PerformanceOptimizer:
             # Clear OpenCV cache
             cv2.destroyAllWindows()
             
-            # Clear numpy cache
-            np.clear_nparray_cache()
+            # Clear numpy caches (no direct API, force garbage collection)
+            gc.collect()
             
             self.last_cleanup = time.time()
             logger.info("Memory cleanup completed")
