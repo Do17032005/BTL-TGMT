@@ -120,25 +120,39 @@ class EmotionDetectionSystem:
             if processed_image is None:
                 raise ValueError("Không thể đọc hoặc xử lý ảnh")
             
-            # Phân tích cảm xúc sử dụng DeepFace với timeout
+            # Detect faces trước khi phân tích để tăng độ chính xác
+            faces = []
             try:
-                result = DeepFace.analyze(
-                    img_path=image_path,
-                    actions=[self.model_name],
-                    detector_backend=self.detector_backend,
-                    enforce_detection=False
-                )
-            except Exception as deepface_error:
-                # Fallback: thử với ảnh đã xử lý
-                logger.warning(
-                    f"DeepFace analyze failed, trying with processed image: {str(deepface_error)}"
-                )
-                result = DeepFace.analyze(
+                faces = DeepFace.extract_faces(
                     img_path=processed_image,
-                    actions=[self.model_name],
                     detector_backend=self.detector_backend,
-                    enforce_detection=False
+                    enforce_detection=False,
                 )
+            except Exception as detection_error:
+                logger.warning(
+                    f"DeepFace extract_faces failed, analyzing full image: {str(detection_error)}"
+                )
+
+            # Nếu tìm thấy khuôn mặt, chọn khuôn mặt lớn nhất để phân tích
+            if faces:
+                if not isinstance(faces, list):
+                    faces = [faces]
+                target_face = max(
+                    faces,
+                    key=lambda f: f.get("face", np.zeros((0, 0))).shape[0]
+                    * f.get("face", np.zeros((0, 0))).shape[1],
+                )
+                analysis_target = target_face.get("face", processed_image)
+            else:
+                analysis_target = processed_image
+
+            # Phân tích cảm xúc với khuôn mặt đã chọn (hoặc ảnh gốc nếu không tìm thấy)
+            result = DeepFace.analyze(
+                img_path=analysis_target,
+                actions=[self.model_name],
+                detector_backend=self.detector_backend,
+                enforce_detection=False,
+            )
             
             # Xử lý kết quả
             if isinstance(result, list):
@@ -382,4 +396,4 @@ def test_emotion_detection():
         print(f"Test image not found: {test_image_path}")
 
 if __name__ == "__main__":
-    test_emotion_detection() 
+    test_emotion_detection()
