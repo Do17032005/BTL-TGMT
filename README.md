@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🎭 Hệ Thống Nhận Diện Cảm Xúc
 
 Hệ thống nhận diện cảm xúc sử dụng AI và DeepFace để phân tích cảm xúc từ ảnh khuôn mặt.
@@ -219,6 +218,10 @@ python -m pytest tests/
 - **Hỗ trợ format**: JPG, PNG, GIF, BMP
 - **Kích thước file**: Tối đa 16MB
 
+## 📚 Hướng Dẫn Huấn Luyện Model
+
+Chi tiết cách huấn luyện lại mô hình cảm xúc nằm trong tài liệu [TRAINING_GUIDE.md](TRAINING_GUIDE.md). Tài liệu cung cấp hướng dẫn chuẩn bị dữ liệu và sử dụng script `train_emotion_model.py` để fine-tune mô hình.
+
 ## 🤝 Đóng Góp
 
 1. Fork repository
@@ -238,9 +241,4 @@ Dự án này được phát hành dưới MIT License.
 
 ---
 
-**Lưu ý**: Hệ thống này sử dụng DeepFace library và các model AI. Vui lòng tuân thủ các quy định về bản quyền và sử dụng hợp lý. 
-=======
-
-# BTL_TGMT Nhận diện cảm xúc khuôn mặt
-
->>>>>>> e08aa247562f63aea166a6f15efb7f6afdb82c4a
+**Lưu ý**: Hệ thống này sử dụng DeepFace library và các model AI. Vui lòng tuân thủ các quy định về bản quyền và sử dụng hợp lý.
