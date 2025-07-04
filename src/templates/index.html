@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhận diện cảm xúc học sinh</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <h1>Nhận diện cảm xúc học sinh</h1>
+    <video id="video" width="400" height="300" autoplay></video>
+    <canvas id="canvas" width="400" height="300" style="display:none;"></canvas>
+    <div>
+        <button id="start">Bật camera</button>
+        <button id="stop" disabled>Tắt camera</button>
+    </div>
+    <h2>Cảm xúc: <span id="emotion">Chưa nhận diện</span></h2>
+    <script src="/static/js/camera.js"></script>
+</body>
+</html> 

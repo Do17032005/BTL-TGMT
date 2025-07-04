@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê cảm xúc</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <h1>Thống kê cảm xúc</h1>
+    <canvas id="emotionChart" width="400" height="200"></canvas>
+    <script>
+        const data = {
+            labels: {{ emotion_counts.keys()|list|tojson }},
+            datasets: [{
+                label: 'Số lần xuất hiện',
+                data: {{ emotion_counts.values()|list|tojson }},
+                backgroundColor: [
+                    '#1976D2', '#388E3C', '#FBC02D', '#D32F2F', '#7B1FA2', '#F57C00', '#0288D1'
+                ]
+            }]
+        };
+        const config = {
+            type: 'bar',
+            data: data,
+        };
+        new Chart(document.getElementById('emotionChart'), config);
+    </script>
+</body>
+</html> 
